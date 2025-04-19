@@ -19,3 +19,13 @@ module "s3-frontend" {
   environment     = var.environment
   bucket_name     = "aexils-frontend-prod"
 }
+
+module "iam-github-actions" {
+  source = "../../modules/iam-github-actions"
+
+  bucket_name = module.s3-frontend.bucket_name
+  cloudfront_distribution_arn = module.cloudfront.cloudfront_distribution_arn
+  iam_user_name = "github-actions-deploy"
+  environment = var.environment
+  github_actions_deploy_policy_name = "github-actions-deploy-policy"
+}

@@ -10,3 +10,7 @@ variable "cloudfront_distribution_arn" {
   description     = "ARN de la distribution CloudFront (ex: arn:aws:cloudfront::123456789012:distribution/EXAMPLE)"
   type            = string
 }
+
+variable "project_name" {
+  type = string
+}

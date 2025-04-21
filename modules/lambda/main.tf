@@ -22,21 +22,28 @@ resource "aws_iam_role_policy_attachment" "lambda_basic_logs" {
 
 resource "aws_lambda_function" "backend" {
   function_name = "${var.project_name}-${var.environment}-backend"
-  handler       = "dist/lambda.handler"
+  description   = "Lambda function for NestJS backend (${var.environment} env)"
   runtime       = "nodejs22.x"
+  handler       = "dist/lambda.handler"
   memory_size   = 512
   timeout       = 10
   role          = aws_iam_role.lambda_exec_role.arn
-  filename      = var.lambda_zip_path
-  source_code_hash = filebase64sha256(var.lambda_zip_path)
+
+  s3_bucket = var.lambda_s3_bucket
+  s3_key    = var.lambda_s3_key
 
   environment {
     variables = {
-      NODE_ENV           = var.environment
-      USERS_TABLE_NAME   = var.users_table_name
-      POSTS_TABLE_NAME   = var.posts_table_name
-      JWT_SECRET         = var.jwt_secret
+      NODE_ENV         = var.environment
+      USERS_TABLE_NAME = var.users_table_name
+      POSTS_TABLE_NAME = var.posts_table_name
+      JWT_SECRET       = var.jwt_secret
     }
+  }
+
+  tags = {
+    Name        = "${var.project_name}-backend"
+    Environment = var.environment
   }
 }
 

@@ -13,5 +13,7 @@ override.tf.json
 *_override.tf.json
 .terraform.tfstate.backup
 
+*.zip
+
 environments/*/terraform.tfstate*
 environments/*/.terraform/

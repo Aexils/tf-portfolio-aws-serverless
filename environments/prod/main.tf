@@ -1,10 +1,10 @@
-terraform {
-  backend "s3" {
-    bucket = "aexils-tf-state-prod"
-    key    = "environments/prod/terraform.tfstate"
-    region = "ca-central-1"
-  }
-}
+# terraform {
+#   backend "s3" {
+#     bucket = "aexils-tf-state-prod"
+#     key    = "environments/prod/terraform.tfstate"
+#     region = "ca-central-1"
+#   }
+# }
 
 module "cloudfront" {
   source = "../../modules/cloudfront"
@@ -59,6 +59,8 @@ module "lambda" {
   users_table_name = module.dynamodb.users_table_name
   posts_table_name = module.dynamodb.posts_table_name
   jwt_secret       = ""
+  lambda_s3_bucket = "aexils-lambda-builds"
+  lambda_s3_key    = "lambda.zip"
 }
 
 module "dynamodb" {
@@ -71,9 +73,18 @@ module "dynamodb" {
 
 module "api_gateway" {
   source        = "../../modules/api-gateway"
+
+  api_domain_name               = var.api_domain_name
+  subject_alternative_names = ["www.${var.api_domain_name}"]
   project_name  = var.project_name
   environment   = var.environment
   lambda_arn    = module.lambda.lambda_arn
+
+  providers = {
+    aws            = aws
+    aws.ca_central = aws.ca_central
+    aws.us_east_1  = aws.us_east_1
+  }
 }
 
 

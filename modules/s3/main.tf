@@ -63,11 +63,6 @@ resource "aws_s3_bucket_versioning" "versioning" {
   }
 }
 
-resource "aws_s3_bucket_acl" "private_acl" {
-  bucket = aws_s3_bucket.terraform_state.id
-  acl    = "private"
-}
-
 resource "aws_s3_bucket" "lambda_builds" {
   bucket        = "${var.project_name}-lambda-builds"
   force_destroy = true
@@ -122,6 +117,6 @@ resource "aws_s3_bucket_policy" "lambda_builds_policy" {
 resource "aws_s3_object" "lambda_placeholder" {
   bucket = aws_s3_bucket.lambda_builds.id
   key    = "lambda.zip"
-  source = "${path.module}/lambda.zip" # fichier local factice
+  source = "${path.module}/lambda.zip"
   etag   = filemd5("${path.module}/lambda.zip")
 }

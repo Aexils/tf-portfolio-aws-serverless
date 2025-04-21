@@ -12,7 +12,7 @@
       ],
       "Resource": [
         "arn:aws:s3:::${bucket_name}",
-        "arn:aws:s3:::${bucket_name}/*"
+        "arn:aws:s3:::${bucket_name}/*",
         "arn:aws:s3:::aexils-tf-state-prod",
         "arn:aws:s3:::aexils-tf-state-prod/*"
       ]

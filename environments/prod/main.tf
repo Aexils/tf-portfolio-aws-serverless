@@ -1,10 +1,10 @@
-# terraform {
-#   backend "s3" {
-#     bucket = "aexils-tf-state-prod"
-#     key    = "environments/prod/terraform.tfstate"
-#     region = "ca-central-1"
-#   }
-# }
+terraform {
+  backend "s3" {
+    bucket = "aexils-tf-state-prod"
+    key    = "environments/prod/terraform.tfstate"
+    region = "ca-central-1"
+  }
+}
 
 module "cloudfront" {
   source = "../../modules/cloudfront"

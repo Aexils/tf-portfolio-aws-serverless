@@ -2,13 +2,10 @@
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Sid": "AllowS3AccessToFrontendBucket",
+      "Sid": "AllowS3AccessToFrontendAndStateBuckets",
       "Effect": "Allow",
       "Action": [
-        "s3:PutObject",
-        "s3:GetObject",
-        "s3:DeleteObject",
-        "s3:ListBucket"
+        "s3:*"
       ],
       "Resource": [
         "arn:aws:s3:::${bucket_name}",
@@ -20,7 +17,14 @@
     {
       "Sid": "AllowCloudFrontInvalidation",
       "Effect": "Allow",
-      "Action": "cloudfront:CreateInvalidation",
+      "Action": [
+        "cloudfront:CreateInvalidation",
+        "cloudfront:GetInvalidation",
+        "cloudfront:GetDistribution",
+        "cloudfront:ListDistributions",
+        "cloudfront:GetOriginAccessControl",
+        "cloudfront:ListTagsForResource"
+      ],
       "Resource": "*"
     },
     {
@@ -38,15 +42,87 @@
         "ecr:PutImage",
         "ecr:InitiateLayerUpload",
         "ecr:UploadLayerPart",
-        "ecr:CompleteLayerUpload"
+        "ecr:CompleteLayerUpload",
+        "ecr:ListTagsForResource"
       ],
       "Resource": "*"
     },
     {
       "Sid": "AllowLambdaUpdate",
       "Effect": "Allow",
-      "Action": "lambda:UpdateFunctionCode",
-      "Resource": "arn:aws:lambda:ca-central-1:422087735005:function:aexils-prod-backend"
+      "Action": [
+        "lambda:UpdateFunctionCode",
+        "lambda:GetFunction",
+        "lambda:GetFunctionConfiguration",
+        "lambda:GetPolicy",
+        "lambda:ListVersionsByFunction"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowDynamoDBAccess",
+      "Effect": "Allow",
+      "Action": [
+        "dynamodb:*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowIAMActions",
+      "Effect": "Allow",
+      "Action": [
+        "iam:GetUser",
+        "iam:ListAccessKeys",
+        "iam:GetRole",
+        "iam:ListAttachedRolePolicies",
+        "iam:GetRolePolicy",
+        "iam:ListRolePolicies",
+        "iam:GetPolicy",
+        "iam:GetPolicyVersion",
+        "iam:ListAttachedUserPolicies"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowRoute53Access",
+      "Effect": "Allow",
+      "Action": [
+        "route53:ListHostedZones",
+        "route53:GetHostedZone",
+        "route53:ListTagsForResource",
+        "route53:ListResourceRecordSets",
+        "route53:ChangeResourceRecordSets"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowACMActions",
+      "Effect": "Allow",
+      "Action": [
+        "acm:DescribeCertificate",
+        "acm:ListCertificates",
+        "acm:ListTagsForCertificate"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowAPIGatewayActions",
+      "Effect": "Allow",
+      "Action": [
+        "apigateway:GET",
+        "apigateway:POST",
+        "apigateway:PUT",
+        "apigateway:DELETE"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowSESActions",
+      "Effect": "Allow",
+      "Action": [
+        "ses:GetIdentityVerificationAttributes"
+      ],
+      "Resource": "*"
     }
   ]
 }

@@ -1,0 +1,6 @@
+environment     = "prod"
+domain_name     = "blog.aexils.ca"
+api_domain_name = "api.blog.aexils.ca"
+aws_account_id  = "422087735005"
+aws_region      = "ca-central-1"
+project_name    = "aexils"

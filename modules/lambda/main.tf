@@ -72,7 +72,10 @@ resource "aws_iam_policy" "lambda_dynamodb_access" {
           "dynamodb:Scan",
           "dynamodb:Query"
         ],
-        Resource = "arn:aws:dynamodb:${var.region}:${var.aws_account_id}:table/${var.posts_table_name}"
+        "Resource": [
+          "arn:aws:dynamodb:${var.region}:${var.aws_account_id}:table/${var.posts_table_name}",
+          "arn:aws:dynamodb:${var.region}:${var.aws_account_id}:table/${var.posts_table_name}/index/SK-index"
+        ]
       }
     ]
   })

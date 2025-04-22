@@ -44,23 +44,16 @@ module "lambda" {
 
   project_name    = "aexils"
   environment     = var.environment
-  lambda_zip_path = "${path.module}/lambda.zip"
-
-  environment_variables = {
-    NODE_ENV           = var.environment
-    USERS_TABLE_NAME   = module.dynamodb.users_table_name
-    POSTS_TABLE_NAME   = module.dynamodb.posts_table_name
-    MAIL_FROM  = "noreply@aexils.ca"
-  }
 
   aws_account_id   = var.aws_account_id
   region           = var.aws_region
 
   users_table_name = module.dynamodb.users_table_name
   posts_table_name = module.dynamodb.posts_table_name
-  jwt_secret       = ""
-  lambda_s3_bucket = "aexils-lambda-builds"
-  lambda_s3_key    = "lambda.zip"
+
+  jwt_secret       = "changeme"
+
+  ecr_repository_url          = module.ecr.repository_url
 }
 
 module "dynamodb" {
@@ -85,6 +78,28 @@ module "api_gateway" {
     aws.ca_central = aws.ca_central
     aws.us_east_1  = aws.us_east_1
   }
+}
+
+module "ecr" {
+  source      = "../../modules/ecr"
+
+  environment = var.environment
+}
+
+data "aws_route53_zone" "selected" {
+  name = "aexils.ca."
+}
+
+module "ses" {
+  source = "../../modules/ses"
+
+  providers = {
+    aws.us_east_1 = aws.us_east_1
+  }
+
+  domain  = "aexils.ca"
+  email   = "noreply@aexils.ca"
+  zone_id = data.aws_route53_zone.selected.zone_id
 }
 
 

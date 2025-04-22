@@ -22,6 +22,31 @@
       "Effect": "Allow",
       "Action": "cloudfront:CreateInvalidation",
       "Resource": "*"
+    },
+    {
+      "Sid": "AllowECRPushPull",
+      "Effect": "Allow",
+      "Action": [
+        "ecr:GetAuthorizationToken",
+        "ecr:BatchCheckLayerAvailability",
+        "ecr:GetDownloadUrlForLayer",
+        "ecr:GetRepositoryPolicy",
+        "ecr:DescribeRepositories",
+        "ecr:ListImages",
+        "ecr:DescribeImages",
+        "ecr:BatchGetImage",
+        "ecr:PutImage",
+        "ecr:InitiateLayerUpload",
+        "ecr:UploadLayerPart",
+        "ecr:CompleteLayerUpload"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "AllowLambdaUpdate",
+      "Effect": "Allow",
+      "Action": "lambda:UpdateFunctionCode",
+      "Resource": "arn:aws:lambda:ca-central-1:422087735005:function:aexils-prod-backend"
     }
   ]
 }

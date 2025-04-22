@@ -23,27 +23,25 @@ resource "aws_iam_role_policy_attachment" "lambda_basic_logs" {
 resource "aws_lambda_function" "backend" {
   function_name = "${var.project_name}-${var.environment}-backend"
   description   = "Lambda function for NestJS backend (${var.environment} env)"
-  runtime       = "nodejs22.x"
-  handler       = "dist/lambda.handler"
+  image_uri     = "${var.ecr_repository_url}:latest"
+  package_type  = "Image"
   memory_size   = 512
   timeout       = 10
   role          = aws_iam_role.lambda_exec_role.arn
 
-  s3_bucket = var.lambda_s3_bucket
-  s3_key    = var.lambda_s3_key
-
   environment {
     variables = {
-      NODE_ENV         = var.environment
-      USERS_TABLE_NAME = var.users_table_name
-      POSTS_TABLE_NAME = var.posts_table_name
-      JWT_SECRET       = var.jwt_secret
+      NODE_ENV           = var.environment
+      USERS_TABLE_NAME   = var.users_table_name
+      POSTS_TABLE_NAME   = var.posts_table_name
+      JWT_SECRET         = var.jwt_secret
+      MAIL_FROM          = "noreply@aexils.ca"
     }
   }
 
   tags = {
-    Name        = "${var.project_name}-backend"
     Environment = var.environment
+    Name        = "${var.project_name}-backend"
   }
 }
 
@@ -59,7 +57,8 @@ resource "aws_iam_policy" "lambda_dynamodb_access" {
         Action = [
           "dynamodb:GetItem",
           "dynamodb:PutItem",
-          "dynamodb:UpdateItem"
+          "dynamodb:UpdateItem",
+          "dynamodb:Query"
         ],
         Resource = "arn:aws:dynamodb:${var.region}:${var.aws_account_id}:table/${var.users_table_name}"
       },
@@ -70,7 +69,8 @@ resource "aws_iam_policy" "lambda_dynamodb_access" {
           "dynamodb:GetItem",
           "dynamodb:PutItem",
           "dynamodb:UpdateItem",
-          "dynamodb:Scan"
+          "dynamodb:Scan",
+          "dynamodb:Query"
         ],
         Resource = "arn:aws:dynamodb:${var.region}:${var.aws_account_id}:table/${var.posts_table_name}"
       }

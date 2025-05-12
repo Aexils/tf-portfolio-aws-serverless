@@ -67,17 +67,9 @@ module "dynamodb" {
 module "api_gateway" {
   source = "../../modules/api-gateway"
 
-  api_domain_name           = var.api_domain_name
-  subject_alternative_names = ["www.${var.api_domain_name}"]
   project_name              = var.project_name
   environment               = var.environment
   lambda_arn                = module.lambda.lambda_arn
-
-  providers = {
-    aws            = aws
-    aws.ca_central = aws.ca_central
-    aws.us_east_1  = aws.us_east_1
-  }
 }
 
 module "ecr" {
@@ -100,6 +92,21 @@ module "ses" {
   domain  = "aexils.ca"
   email   = "noreply@aexils.ca"
   zone_id = data.aws_route53_zone.selected.zone_id
+}
+
+module "cloudfront-api" {
+  source = "../../modules/cloudfront-api"
+
+  api_domain_name = var.api_domain_name
+  api_endpoint = module.api_gateway.api_endpoint
+  environment = var.environment
+  subject_alternative_names = [var.api_domain_name]
+
+  providers = {
+    aws            = aws
+    aws.ca_central = aws.ca_central
+    aws.us_east_1  = aws.us_east_1
+  }
 }
 
 

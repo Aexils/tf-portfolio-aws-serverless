@@ -23,7 +23,12 @@
         "cloudfront:GetDistribution",
         "cloudfront:ListDistributions",
         "cloudfront:GetOriginAccessControl",
-        "cloudfront:ListTagsForResource"
+        "cloudfront:ListTagsForResource",
+        "cloudfront:UpdateDistribution",
+        "cloudfront:CreateFunction",
+        "cloudfront:DescribeFunction",
+        "cloudfront:PublishFunction",
+        "cloudfront:GetFunction"
       ],
       "Resource": "*"
     },
@@ -79,7 +84,8 @@
         "iam:ListRolePolicies",
         "iam:GetPolicy",
         "iam:GetPolicyVersion",
-        "iam:ListAttachedUserPolicies"
+        "iam:ListAttachedUserPolicies",
+        "iam:ListPolicyVersions"
       ],
       "Resource": "*"
     },

@@ -15,6 +15,7 @@ module "cloudfront" {
   oac_name                  = "cloudfront_oac"
   bucket_domain_name        = module.s3.bucket_domain_name
   bucket_name               = module.s3.bucket_name
+
   providers = {
     aws = aws
   }

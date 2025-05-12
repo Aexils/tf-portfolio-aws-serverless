@@ -67,9 +67,9 @@ module "dynamodb" {
 module "api_gateway" {
   source = "../../modules/api-gateway"
 
-  project_name              = var.project_name
-  environment               = var.environment
-  lambda_arn                = module.lambda.lambda_arn
+  project_name = var.project_name
+  environment  = var.environment
+  lambda_arn   = module.lambda.lambda_arn
 }
 
 module "ecr" {
@@ -97,9 +97,9 @@ module "ses" {
 module "cloudfront-api" {
   source = "../../modules/cloudfront-api"
 
-  api_domain_name = var.api_domain_name
-  api_endpoint = module.api_gateway.api_endpoint
-  environment = var.environment
+  api_domain_name           = var.api_domain_name
+  api_endpoint              = module.api_gateway.api_endpoint
+  environment               = var.environment
   subject_alternative_names = [var.api_domain_name]
 
   providers = {

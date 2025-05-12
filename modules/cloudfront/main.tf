@@ -61,6 +61,7 @@ resource "aws_acm_certificate_validation" "cert_validation" {
 
 resource "aws_cloudfront_distribution" "s3_distribution" {
   depends_on = [aws_acm_certificate_validation.cert_validation]
+
   origin {
     domain_name              = var.bucket_domain_name
     origin_access_control_id = aws_cloudfront_origin_access_control.cloudfront_oac.id
@@ -68,16 +69,10 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   }
 
   enabled             = true
-  comment             = "Cloudfront for Blog"
+  comment             = "Cloudfront for Angular SPA with routing"
   default_root_object = "index.html"
   price_class         = "PriceClass_100"
   aliases             = [var.domain_name]
-
-  restrictions {
-    geo_restriction {
-      restriction_type = "none"
-    }
-  }
 
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD"]
@@ -93,16 +88,27 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     }
 
     viewer_protocol_policy = "redirect-to-https"
+
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.rewrite_index_html.arn
+    }
+  }
+
+  restrictions {
+    geo_restriction {
+      restriction_type = "none"
+    }
+  }
+
+  viewer_certificate {
+    acm_certificate_arn      = aws_acm_certificate.acm_certificate.arn
+    ssl_support_method       = "sni-only"
+    minimum_protocol_version = "TLSv1.2_2021"
   }
 
   tags = {
     Environment = var.environment
-  }
-
-  viewer_certificate {
-    acm_certificate_arn = aws_acm_certificate.acm_certificate.arn
-    ssl_support_method = "sni-only"
-    minimum_protocol_version = "TLSv1.2_2021"
   }
 }
 
@@ -116,4 +122,23 @@ resource "aws_route53_record" "cloudfront_alias" {
     zone_id                = aws_cloudfront_distribution.s3_distribution.hosted_zone_id
     evaluate_target_health = false
   }
+}
+
+resource "aws_cloudfront_function" "rewrite_index_html" {
+  name    = "angular-routing-rewrite"
+  runtime = "cloudfront-js-1.0"
+  comment = "Rewrite all SPA routes to index.html"
+
+  code = <<EOF
+    function handler(event) {
+      var request = event.request;
+      var uri = request.uri;
+
+      if (!uri.includes('.') && !uri.endsWith('/')) {
+        request.uri = '/index.html';
+      }
+
+      return request;
+    }
+  EOF
 }

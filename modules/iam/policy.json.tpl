@@ -60,7 +60,8 @@
         "lambda:GetFunction",
         "lambda:GetFunctionConfiguration",
         "lambda:GetPolicy",
-        "lambda:ListVersionsByFunction"
+        "lambda:ListVersionsByFunction",
+        "lambda:RemovePermission"
       ],
       "Resource": "*"
     },
@@ -85,7 +86,11 @@
         "iam:GetPolicy",
         "iam:GetPolicyVersion",
         "iam:ListAttachedUserPolicies",
-        "iam:ListPolicyVersions"
+        "iam:ListPolicyVersions",
+        "iam:DetachUserPolicy",
+        "iam:DetachRolePolicy",
+        "iam:DeleteRolePolicy",
+        "iam:DeleteAccessKey"
       ],
       "Resource": "*"
     },
@@ -127,7 +132,8 @@
       "Sid": "AllowSESActions",
       "Effect": "Allow",
       "Action": [
-        "ses:GetIdentityVerificationAttributes"
+        "ses:GetIdentityVerificationAttributes",
+        "ses:DeleteIdentity"
       ],
       "Resource": "*"
     }

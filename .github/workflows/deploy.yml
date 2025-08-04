@@ -79,6 +79,10 @@ jobs:
         with:
           terraform_version: 1.11.4
 
+      - name: ✅ Terraform Init
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: terraform init
+
       - name: 💣 Destroy Terraform Infra
         working-directory: ${{ env.TF_WORKING_DIR }}
         run: terraform destroy -auto-approve
